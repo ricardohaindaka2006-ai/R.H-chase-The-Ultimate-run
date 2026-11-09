@@ -67,7 +67,7 @@ ctx.fillStyle="#b5d6e9";ctx.font="bold 15px system-ui";ctx.fillText("DISTANCE "+
 draw();
 
 // Scenic expedition mode: keyboard/touch driving, collectible cash and optional landscape/fullscreen hint.
-const exp=$('expedition'),ec=exp.getContext('2d');let expMode='countryside',expRun=false,expX=450,expTick=0,expCash=[],expLast=0,expKeys={},expTouch=0;
+const exp=$('expedition'),ec=exp.getContext('2d');let expMode='countryside',expRun=false,expX=450,expTick=0,expCash=[],expLast=0,expKeys={},expTouch=0,expCashTotal=0;
 const modeNames={countryside:'Countryside drive',mountain:'Mountain pass',wild:'Wild trails',city:'City night'};
 function paintExp(){let w=900,h=390;let night=expMode==='city';let sky=ec.createLinearGradient(0,0,0,h);sky.addColorStop(0,night?'#101b42':'#80c5e2');sky.addColorStop(.65,night?'#263b57':'#d3e2ce');sky.addColorStop(1,'#315b45');ec.fillStyle=sky;ec.fillRect(0,0,w,h);
 if(expMode==='mountain'||expMode==='countryside'){for(let i=0;i<7;i++){let xx=i*160-40;ec.fillStyle=['#557988','#426c79','#365c6a'][i%3];ec.beginPath();ec.moveTo(xx,235);ec.lineTo(xx+90,35+(i%3)*18);ec.lineTo(xx+190,235);ec.fill();ec.fillStyle='#eef5f2';ec.beginPath();ec.moveTo(xx+67,88+(i%3)*18);ec.lineTo(xx+90,35+(i%3)*18);ec.lineTo(xx+115,89+(i%3)*18);ec.fill()}}
@@ -78,7 +78,17 @@ ec.strokeStyle='#3d4851';ec.lineWidth=100;ec.beginPath();ec.moveTo(500,420);ec.b
 expCash.forEach(o=>{ec.fillStyle='#ffd166';ec.beginPath();ec.arc(o.x,o.y,8,0,7);ec.fill()});
 ec.fillStyle='#5de4ff';ec.beginPath();ec.moveTo(expX,300);ec.lineTo(expX-21,346);ec.lineTo(expX+21,346);ec.fill();ec.fillStyle='#f4fbff';ec.font='bold 17px system-ui';ec.fillText(modeNames[expMode].toUpperCase(),22,30);ec.font='13px system-ui';ec.fillText('EXPEDITION · COLLECT CASH · EXPLORE',22,52);
 }
-function expLoop(t){if(!expRun)return;let dt=Math.min((t-expLast)/16,2);expLast=t;expTick+=dt;expX=Math.max(215,Math.min(685,expX+(((expKeys.ArrowLeft||expKeys.a)?-1:0)+((expKeys.ArrowRight||expKeys.d)?1:0)+expTouch)*5*dt));if(Math.random()<.018)expCash.push({x:230+Math.random()*440,y:-5});expCash.forEach(o=>o.y+=3*dt);expCash=expCash.filter(o=>{if(o.y>285&&o.y<350&&Math.abs(o.x-expX)<30){s.cash+=45;s.xp+=8;save();return false}return o.y<410});paintExp();expLast=t;requestAnimationFrame(expLoop)}
+function expLoop(t){if(!expRun)return;let dt=Math.min((t-expLast)/16,2);expLast=t;expTick+=dt;expX=Math.max(215,Math.min(685,expX+(((expKeys.ArrowLeft||expKeys.a)?-1:0)+((expKeys.ArrowRight||expKeys.d)?1:0)+expTouch)*5*dt));if(Math.random()<.018)expCash.push({x:230+Math.random()*440,y:-5});expCash.forEach(o=>o.y+=3*dt);expCash=expCash.filter(o=>{if(o.y>285&&o.y<350&&Math.abs(o.x-expX)<30){expCashTotal+=45;$('expStatus').textContent='Collected $45 · Expedition earnings }return o.y<410});paintExp();expLast=t;requestAnimationFrame(expLoop)}
+function toggleExp(){expRun=!expRun;$('expStart').textContent=expRun?'Pause drive':'Resume drive';$('expStatus').textContent=expRun?'Driving '+modeNames[expMode]+' · Collect the glowing cash':'Drive paused';if(expRun){expLast=performance.now();requestAnimationFrame(expLoop)}}
+$('expStart').onclick=toggleExp;
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mode]').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');expMode=b.dataset.mode;paintExp();$('expStatus').textContent=modeNames[expMode]+' selected'});
+$('rotateBtn').onclick=async()=>{const hint=$('rotateHint');hint.classList.toggle('show');try{if(!document.fullscreenElement){await document.documentElement.requestFullscreen();if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock('landscape')}else{if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock();await document.exitFullscreen()}}catch(e){hint.classList.add('show')}};
+window.addEventListener('keydown',e=>expKeys[e.key]=true);window.addEventListener('keyup',e=>expKeys[e.key]=false);
+exp.addEventListener('pointerdown',e=>{let r=exp.getBoundingClientRect();expTouch=e.clientX<r.left+r.width/2?-1:1});['pointerup','pointerleave','pointercancel'].forEach(n=>exp.addEventListener(n,()=>expTouch=0));paintExp();
+
+})();
+</script></body></html>
++expCashTotal;return false}return o.y<410});paintExp();expLast=t;requestAnimationFrame(expLoop)}
 function toggleExp(){expRun=!expRun;$('expStart').textContent=expRun?'Pause drive':'Resume drive';$('expStatus').textContent=expRun?'Driving '+modeNames[expMode]+' · Collect the glowing cash':'Drive paused';if(expRun){expLast=performance.now();requestAnimationFrame(expLoop)}}
 $('expStart').onclick=toggleExp;
 document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mode]').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');expMode=b.dataset.mode;paintExp();$('expStatus').textContent=modeNames[expMode]+' selected'});
