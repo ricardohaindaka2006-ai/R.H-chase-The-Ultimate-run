@@ -150,3 +150,81 @@ Add explorable farms and ranches to free roam and dedicated story/side missions:
 - A complete photorealistic AAA-scale world cannot fit inside a 100 MB package. Use scalable assets, LODs, texture/audio compression, occlusion culling and device graphics presets; test actual signed Android/iOS packages.
 - Build Android and iOS packages, signing, store metadata, privacy disclosures, age ratings, screenshots, icons and review submissions as separate release tasks. Store publication requires the owner's developer accounts and approval; do not claim published until each store confirms it.
 - The current browser runner prototype is not equivalent to the complete 2D/3D open-world, farming, life-simulation or online product. Mark features implemented only after code exists and automated/manual tests demonstrate them.
+
+
+
+### Everyday life, careers and recreation — expanded activity system
+
+The world supports optional everyday activities alongside the main story. Activities can be short jobs, multi-stage mission chains or ongoing routines. Rewards are balanced and transparent.
+
+#### Wildlife, hunting and conservation
+- Guided fictional hunting trips with permits, seasonal rules and protected-species restrictions, plus humane/non-lethal alternatives.
+- Track wildlife using footprints, calls, binoculars and field journals; complete wildlife photography, ranger patrol, habitat restoration, animal rescue and anti-poaching missions.
+- Hunting uses fictional game species and safe abstractions. Never reward cruelty or harming protected wildlife.
+- Earn through lawful contracts, event prizes, photography commissions and conservation work. Reputation reflects compliance.
+
+#### Outdoor recreation and everyday professions
+- Fishing, camping, hiking, climbing, cycling, surfing, swimming, kayaking, boating, 4x4 trails, towing and off-road rescue.
+- Jobs include taxi/ride-hailing, delivery, bus driving, mechanics, construction, maintenance, farming, ranching, forestry, fishing, retail, restaurants, hotels, tour guiding, piloting, marine operations, paramedic, firefighter and ranger roles.
+- Jobs have tutorials, shifts/contracts, performance ratings, pay, expenses and progression. Players can change careers without losing story progress.
+
+#### Social, home and leisure activities
+- Cooking, grocery shopping, decorating and maintaining homes, pet care, gatherings, gyms, parks, cinemas, markets, restaurants, clubs and sports.
+- Friendships and relationships are optional, age-appropriate and consent-respecting. Players can decline invitations.
+- Every activity follows a clear loop: discover/accept, prepare, play, receive outcome/rating, payout/reputation, then unlock or upgrade.
+- Payouts reflect time, skill, risk, expenses and objectives; prevent AFK income exploits and runaway inflation.
+
+### Relationships, dating and social simulation
+
+- The protagonist can build friendships and romantic relationships with authored characters who have distinct identities, personalities, routines, preferences, boundaries and memories.
+- Use the in-game phone to call, text, invite, make plans, share updates and respond to missed calls. Calls should have believable ringing, answer/decline behavior, dialogue and hang-up flow.
+- Plan dates and outings at restaurants, cafés, cinemas, beaches, parks, sporting events and nightlife venues. Activities should have locations, schedules, costs and optional dialogue choices.
+- Track relationship dimensions such as affection, trust, communication and reliability. Actions and story choices influence them; no single repetitive gift or action should guarantee affection.
+- Characters remember meaningful promises, dates, arguments and support. Repeatedly ignoring plans, breaking trust or incompatible choices can cause conflict, distance or a breakup. Reconciliation may be available when consistent with the character and story, but is never guaranteed.
+- NPCs can initiate calls, messages and invitations according to schedules and relationship state. Players can accept, decline, postpone or silence them; no interruption during critical gameplay.
+- Provide privacy and boundaries: no coercive relationship mechanics, stalking rewards or forced romance. Make romance optional and suitable for the game's age rating.
+
+### School, family and daily routines
+
+- Populate the world with children and teenagers who attend age-appropriate schools, follow school-day schedules, travel to and from school, take part in supervised activities and interact with family and peers.
+- School gameplay can include attendance, lessons, homework, projects, sports, clubs, friendships, school events and safe transport missions. Keep child-focused content non-sexual and age-appropriate.
+- Adult characters have believable work shifts, errands, family responsibilities, leisure time and sleep routines. NPC schedules respond to weekdays, weekends, weather and local events.
+- The player may support family members, give lifts, attend events, help with homework or complete errands where appropriate to the protagonist's age and story.
+
+### In-game smartphone, internet and mission calling
+
+- A persistent smartphone interface includes contacts, call history, text messages, group chats, calendar, map/GPS, camera, photo gallery, mission offers, work/business tools and settings.
+- Include a fictional in-world internet/browser experience. Players can search fictional websites, local businesses, events, jobs, vehicle listings, news, travel information and mission clues. Search results are authored game-world content, not unrestricted access to the real internet.
+- Missions can be discovered through contacts, messages, websites, job boards, adverts, calendar events and map markers.
+- Phone-activated mission flow: open a contact or mission listing → review the offer and any requirements → press Call/Accept → show the call connecting and the contact answering → play voiced or subtitled briefing dialogue → confirm the mission → transition into the mission with its objective, map marker and story scene.
+- Contacts can be busy, unavailable, decline, call back or offer alternate meeting times. The player can hang up, decline or postpone without losing unrelated progress.
+- Mission invitations show expected duration, location, reward, risk and prerequisites. Accepting a mission should save progress and start at a sensible point.
+- Use original fictional apps, brands, websites and phone UI. Do not expose actual user phone contacts, messages, browsing history or other private device data.
+
+### Nightlife, alcohol and responsible simulation
+
+- Add age-gated nightlife venues, parties, bars and clubs for adult characters, with music, dancing, social interactions, transport and venue schedules.
+- Adult characters may choose to drink fictionalised alcoholic beverages. Represent intoxication through temporary balance, reaction-time, camera and control effects, with clear limits and recovery over in-game time.
+- Include consequences such as higher taxi costs, missed appointments, reduced mission performance and the need to arrange a safe ride or wait until sober. Never reward drink-driving; block or strongly discourage operating vehicles while intoxicated and offer taxi, friend or public transport alternatives.
+- Keep all alcohol and nightlife interactions age-appropriate and consistent with the selected platform rating. Underage characters must not access alcohol or adult venues.
+
+### Economy, continuity and implementation requirements
+
+- All routines, relationships, school/work schedules, calls, messages, mission offers, reputation and business state persist in the shared save/profile.
+- The same canonical characters, faces, voices, names, costumes and animation identities appear in story missions, runner levels, free roam, dates, jobs and cutscenes. Mission-specific clothing is an intentional change, not a character replacement.
+- Online versions must protect private messages and relationship data, provide block/report/mute controls and validate rewards server-side. Avoid exposing personal data to other players.
+- Keep all systems optional where possible. Respect player choice, accessibility, age ratings, privacy and performance. Build and test one complete vertical slice before expanding the entire simulation.
+
+### Visual continuity and shared character identity — non-negotiable production rule
+
+Every mission mode must feel like the same premium game world. Switching between open-world 3D, endless runner, cinematic chase, hunting, farming, island, snow or space missions must not cause an unexplained downgrade in visual quality or character identity.
+
+- The protagonist and recurring cast are the same canonical characters across story missions, free roam, runner challenges, side jobs, dates, co-op and cutscenes.
+- Preserve each character's face, facial proportions, skin tone, hairstyle, body proportions, voice, personality, name, signature details and animation identity across modes and camera angles.
+- Use shared canonical character models/rigs and identity data. Adapt outfits and equipment to the activity, but never silently replace a character with a generic runner avatar or a different-looking model.
+- Runner missions use the same character assets, materials, lighting approach, environment quality and animation polish as open-world missions. Change camera framing and level layout for the gameplay, not the visual standard.
+- 2D missions are deliberate art-directed adaptations of the same cast and world, preserving likeness, costumes, palette and environmental motifs rather than using unrelated placeholder art.
+- Create one art bible for colour science, materials, lighting, atmosphere, environmental density, facial rendering, animation, UI and audio. Target cinematic, detailed realism with expressive faces, believable skin/hair/fabric, convincing vehicles, natural shadows, reflections, weather and environmental sound.
+- Build original assets and visual language. Aim for the broad scale and polish of premium open-world games without copying GTA or other games' characters, maps, UI, assets, music or branding.
+- Use shared asset libraries, consistent shaders, lighting profiles and animation systems. LODs, streaming and scalable effects may protect performance, but lower graphics presets must preserve character models, facial identity, costumes, core animations and art direction.
+- Test visual continuity and frame pacing on low-, mid- and high-tier supported phones. No mission mode is approved until it meets the shared art bible and has no missing or placeholder release assets.
