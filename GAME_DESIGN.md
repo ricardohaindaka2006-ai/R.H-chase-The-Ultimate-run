@@ -98,3 +98,55 @@ Every earned ability must remain unlocked in free roam after its story mission. 
 
 ## Release requirements
 A design document is not a completed or store-ready game. Before release, implement and test each mode, save systems, controller and touch input, orientation handling, performance, accessibility, privacy disclosures, age rating, crash reporting, store screenshots, icons, signing, and platform-specific builds. Android and iOS publication require developer accounts, store compliance review and signed production builds. Web deployment must be tested independently.
+
+
+## Expanded hybrid mission catalogue — approved direction
+
+### Mission-format rule
+The game uses one persistent player identity, progression, inventory, map, and save. 2D and 3D are authored mission formats, not a global graphics toggle. Each mission selects the format that best serves its mechanics and narrative. A chapter may alternate between formats; transitions must be clearly staged, preserve objectives and rewards, and never reset the player's progress. Open-world free roam is primarily 3D; selected arcade, chase, puzzle, flashback and stylised challenge missions may be 2D.
+
+### Endless runner and parkour playlist
+Create an original endless-runner mode drawing on broad genre conventions from lane runners, temple escape games and collection runners. Do not reuse their protected characters, levels, music, branding, UI or assets.
+- Three-lane and free-form parkour variants with swipe left/right, jump and slide; optional touch buttons and controller/keyboard input.
+- Distinct routes: busy city transit corridors, rail yards, rooftops, jungle ruins, desert highways, forest trails, mine tunnels, construction sites and coastal boardwalks.
+- Hazards: moving trains, road traffic, barriers, gaps, falling debris, branches, low beams, water hazards and collapsing structures, each with readable telegraphs and fair collision timing.
+- Pickups: coins, gold, mission tokens and temporary power-ups such as magnet, shield and controlled boost. Clearly communicate duration and cooldown.
+- Missions: distance targets, collectible routes, rescue chases, time trials, boss pursuits, daily/weekly challenges and friend score challenges.
+- Difficulty scales gradually through speed, obstacle patterns and route complexity. Include checkpoints for authored levels, practice mode, accessibility assists and a fair restart flow.
+- Results show distance, objectives, collected items, near misses, score multiplier, grade, XP and earned rewards. Leaderboards must validate scores server-side when online.
+
+### Rural life, farming and timber
+Add explorable farms and ranches to free roam and dedicated story/side missions:
+- Buy, lease or inherit a farm; develop fields, barns, fences, sheds, water points and equipment.
+- Care for cattle and other suitable livestock: feed, water, herd, shelter, transport and veterinary-care gameplay. Use welfare indicators and avoid rewarding neglect.
+- Plant, irrigate, harvest and sell crops with seasonal/weather variation.
+- Operate tractors, trailers, harvesters, utility vehicles and 4x4 pickups.
+- Forestry missions use a sustainable permit/management mechanic: select marked trees, operate safe cutting equipment, process logs at a sawmill and transport timber. Replanting and habitat protection affect reputation and rewards.
+- Farm missions include animal rescue, broken-fence repair, supply delivery, harvest deadlines, equipment recovery and rural emergencies.
+
+### Business ownership and personal-life simulation
+- Players can establish and operate businesses such as garages, dealerships, restaurants, shops, construction, logistics, property, farms and timber operations.
+- Business loops include setup costs, staffing, stock/supplies, maintenance, customer demand, revenue, expenses, upgrades and optional management missions. Show understandable ledgers and prevent passive income from replacing gameplay.
+- Homes, friendships, romance/relationships and family activities are optional role-play systems with consent-respecting dialogue choices and age-appropriate presentation.
+- In-world phone supports contacts, calls, texts, calendar, map, business dashboard and mission invitations. Players can accept, decline or defer calls; never interrupt critical controls or force a mission without consent.
+- Personal and business events can generate contextual side missions. Save relationship/business state across sessions.
+
+### Islands, boats and marine missions
+- Add navigable coastlines, ports, marinas and island destinations connected by boat, ferry or aircraft travel.
+- Watercraft classes include small boats, speedboats, fishing boats and larger leisure craft, each with distinct acceleration, turning, buoyancy, wake, fuel and damage behavior.
+- Mission types include island supply runs, navigation trials, fishing, marine rescue, storm response, cargo transport, coastal exploration, underwater survey and shipwreck discovery.
+- Underwater spaces require readable oxygen/air limits, visibility, buoyancy, safe wildlife interactions and clear return routes.
+- Island properties and businesses (such as marinas or resorts) are later progression options, not assumed to be available in the first release.
+
+### Online mode
+- Separate online free-roam sessions, co-op story/activities, competitive runner leaderboards, races, community events and private friend sessions.
+- Use server-authoritative accounts, progression, inventory, currency, purchases, matchmaking and score validation. Client prediction may smooth movement but must not decide valuable outcomes.
+- Add parties/invites, presence, reconnect, latency indicators, block/report/mute, moderation tools, chat safety controls and privacy settings.
+- Never expose private account data. Protect admin functions with server-side role checks and audit logs. Provide a solo/offline path where feasible.
+- Launch online only after load, abuse, reconnect, persistence, anti-cheat and moderation tests pass.
+
+### Mobile scope and release packaging
+- Aim for an initial install below 100 MB only as a measured release target, not a guarantee. Keep the core shell and first playable region lean; stream or separately download optional environment/audio/texture packs with clear sizes and Wi-Fi controls.
+- A complete photorealistic AAA-scale world cannot fit inside a 100 MB package. Use scalable assets, LODs, texture/audio compression, occlusion culling and device graphics presets; test actual signed Android/iOS packages.
+- Build Android and iOS packages, signing, store metadata, privacy disclosures, age ratings, screenshots, icons and review submissions as separate release tasks. Store publication requires the owner's developer accounts and approval; do not claim published until each store confirms it.
+- The current browser runner prototype is not equivalent to the complete 2D/3D open-world, farming, life-simulation or online product. Mark features implemented only after code exists and automated/manual tests demonstrate them.
