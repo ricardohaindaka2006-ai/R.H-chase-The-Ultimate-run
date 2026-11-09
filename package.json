@@ -1,0 +1,13 @@
+{
+  "name": "rh-chase-ultimate-run",
+  "version": "1.0.0",
+  "private": true,
+  "description": "R.H-CHASE - The Ultimate Run browser game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
