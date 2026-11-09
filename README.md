@@ -1,9 +1,9 @@
 # R.H-CHASE — The Ultimate Adventure
 
-A mobile-friendly browser prototype for a grounded, cinematic 2040 open-world adventure beginning in Namibia.
+A mobile-friendly browser prototype for a grounded, cinematic 2024 open-world adventure beginning in Namibia, with a grounded lunar expedition chapter.
 
 ## Current build status
-- Updated story direction: believable 2040, Namibia-led setting, realistic everyday technology, with restrained mystery/fantasy elements.
+- Updated story direction: believable 2024, Namibia-led setting, realistic everyday technology, with restrained mystery/fantasy elements.
 - Browser prototype: lightweight 2D playable runner, story chapters, vehicle/wardrobe progression, settings, local save and PWA shell.
 - Regional preferences: detects a likely country from device locale and allows manual country selection. Currency code is a display preview only.
 - Payments: **not enabled**. No real-money checkout, paid entitlements, cloud accounts or server-side purchases exist in this prototype.
