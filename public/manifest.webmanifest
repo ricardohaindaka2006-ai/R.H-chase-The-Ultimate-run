@@ -1,0 +1,19 @@
+{
+  "name": "R.H-CHASE: The Ultimate Adventure",
+  "short_name": "R.H-CHASE",
+  "description": "A story-driven multi-world action adventure.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#07111e",
+  "theme_color": "#07111e",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
