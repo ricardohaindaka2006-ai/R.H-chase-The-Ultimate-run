@@ -16,6 +16,8 @@
 .controls{display:flex;justify-content:center;gap:10px;padding:12px;background:#0b1423;border-top:1px solid #263d59}.ctrl{width:64px;height:48px;border-radius:13px;border:1px solid #38516e;background:#15253b;color:#fff;font-size:22px;font-weight:900;touch-action:manipulation}
 .side{padding:16px}.side h3{margin:0 0 12px;font-size:14px;letter-spacing:.08em}.side p{color:var(--muted);font-size:12px;line-height:1.55}.scoreline{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #26364d;font-size:13px}.scoreline strong{color:var(--gold)}.rule{margin:15px 0;padding:12px;border-radius:12px;background:#0a1423;color:#aebfd3;font-size:12px;line-height:1.55}.store{margin-top:14px;padding:14px;border:1px solid #344b66;border-radius:14px;background:#0c1728}.store b{display:block;margin-bottom:5px}.store .lock{color:var(--gold);font-size:11px;letter-spacing:.08em}.foot{text-align:center;color:#647b98;font-size:11px;margin-top:15px}
 @media(max-width:720px){.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr;gap:10px}.side h3{grid-column:1/-1}.rule,.store{margin:0}.stage{min-height:260px}.top{align-items:flex-start}.pill{font-size:10px}}
+
+.worldhub{margin-top:14px;padding:15px;border:1px solid #29435e;border-radius:16px;background:#0c1728}.worldhub h2{font-size:17px;margin:0 0 8px}.worldhub p{color:#a8bbce;font-size:12px;line-height:1.5}.worldmodes{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.worldmodes button{background:#1a2a40;color:#e9f4ff;border:1px solid #39536f;border-radius:10px;padding:9px 12px;font-weight:700}.worldmodes button.selected{background:#ffd166;color:#17202a}.landscape{display:block;width:100%;height:auto;border-radius:12px;background:#0a1724;border:1px solid #314d65}.orient{display:none;background:#15263b;padding:10px;border-radius:10px;color:#ffdf8b;font-size:12px;margin:8px 0}.orient.show{display:block}.worldhud{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}.worldhud span{font-size:12px;color:#a8bbce}.worldhub .mini{font-size:12px;padding:9px 12px}
 </style>
 </head>
 <body><main class="wrap">
@@ -28,7 +30,14 @@
 </section>
 <aside class="side"><h3>RUN INTEL</h3><div><div class="scoreline"><span>Move</span><strong>← → / A D</strong></div><div class="scoreline"><span>Jump</span><strong>↑ / SPACE</strong></div><div class="scoreline"><span>Pause</span><strong>P</strong></div><div class="rule">Three lanes. One runner. Obstacles get faster the longer you survive. Hit a barrier and the chase is over.</div></div>
 <div class="store"><b>RUNNER VAULT</b><span class="lock">PREMIUM CONTENT — COMING SOON</span><p>New runner skins, trail effects and challenge packs are planned. Purchases will only be enabled after secure checkout is configured.</p></div>
-</aside></div><div class="foot">© 2026 R.H-CHASE • Built for desktop and mobile browsers</div>
+</aside></div>
+<section class="worldhub" id="worldhub"><h2>🌄 Beyond the City — Open Road Expeditions</h2><p>Leave the city behind. Explore countryside roads, forests, lakes and mountain passes. Switch between a wide cinematic driving view and a portrait arcade challenge.</p>
+<div class="worldmodes"><button class="selected" data-mode="countryside">🌲 Countryside drive</button><button data-mode="mountain">🏔️ Mountain pass</button><button data-mode="wild">🦌 Wild trails</button><button data-mode="city">🌃 City night</button></div>
+<canvas id="expedition" class="landscape" width="900" height="390" aria-label="Scenic driving expedition"></canvas>
+<div class="worldhud"><span id="expStatus">Expedition ready · Arrow keys / A-D to steer</span><div><button class="mini" id="expStart">Start drive</button> <button class="mini" id="rotateBtn">⛶ Full-screen / rotate</button></div></div>
+<div id="rotateHint" class="orient">📱 Turn your phone sideways for the cinematic wide-screen mission. Return to portrait for the arcade runner.</div>
+<p>Drive through scenic environments and collect cash to buy vehicles and upgrades. This is an additional 2D expedition prototype; full 3D roaming, aircraft and large-scale cinematic missions need further game-engine development.</p></section>
+<div class="foot">© 2026 R.H-CHASE • Built for desktop and mobile browsers</div>
 </main>
 <script>
 (()=>{"use strict";
@@ -56,5 +65,26 @@ for(let o of items){let y=o.z,scale=.25+y/700,x=lanes[o.lane],w=(o.type==="coin"
 let px=lanes[lane],py=ground-jump*115;ctx.save();ctx.translate(px,py);ctx.shadowColor="#43eaff";ctx.shadowBlur=25;ctx.fillStyle="#43dff4";ctx.beginPath();ctx.roundRect(-25,-58,50,70,15);ctx.fill();ctx.shadowBlur=0;ctx.fillStyle="#10233b";ctx.fillRect(-15,-40,30,10);ctx.fillStyle="#f7fbff";ctx.fillRect(-15,10,12,24);ctx.fillRect(5,10,12,24);ctx.restore();
 ctx.fillStyle="#b5d6e9";ctx.font="bold 15px system-ui";ctx.fillText("DISTANCE "+Math.floor(score)+"m",32,42);if(flash>0){flash-=.02;ctx.fillStyle="#fff";ctx.fillRect(0,0,960,600)}}
 draw();
+
+// Scenic expedition mode: keyboard/touch driving, collectible cash and optional landscape/fullscreen hint.
+const exp=$('expedition'),ec=exp.getContext('2d');let expMode='countryside',expRun=false,expX=450,expTick=0,expCash=[],expLast=0,expKeys={},expTouch=0;
+const modeNames={countryside:'Countryside drive',mountain:'Mountain pass',wild:'Wild trails',city:'City night'};
+function paintExp(){let w=900,h=390;let night=expMode==='city';let sky=ec.createLinearGradient(0,0,0,h);sky.addColorStop(0,night?'#101b42':'#80c5e2');sky.addColorStop(.65,night?'#263b57':'#d3e2ce');sky.addColorStop(1,'#315b45');ec.fillStyle=sky;ec.fillRect(0,0,w,h);
+if(expMode==='mountain'||expMode==='countryside'){for(let i=0;i<7;i++){let xx=i*160-40;ec.fillStyle=['#557988','#426c79','#365c6a'][i%3];ec.beginPath();ec.moveTo(xx,235);ec.lineTo(xx+90,35+(i%3)*18);ec.lineTo(xx+190,235);ec.fill();ec.fillStyle='#eef5f2';ec.beginPath();ec.moveTo(xx+67,88+(i%3)*18);ec.lineTo(xx+90,35+(i%3)*18);ec.lineTo(xx+115,89+(i%3)*18);ec.fill()}}
+ec.fillStyle=expMode==='wild'?'#214d39':night?'#172d3c':'#316448';ec.fillRect(0,225,w,165);
+for(let i=0;i<24;i++){let xx=(i*127+expTick*.15)%950-25,yy=250+(i*43)%135;ec.fillStyle=expMode==='wild'?'#183d31':'#24503a';ec.beginPath();ec.moveTo(xx,yy-35);ec.lineTo(xx-19,yy+4);ec.lineTo(xx+19,yy+4);ec.fill();ec.fillStyle='#765b3b';ec.fillRect(xx-3,yy+4,6,10)}
+if(expMode==='countryside'||expMode==='wild'){ec.fillStyle='#4caebd';ec.beginPath();ec.ellipse(760,300,95,33,-.12,0,7);ec.fill()}
+ec.strokeStyle='#3d4851';ec.lineWidth=100;ec.beginPath();ec.moveTo(500,420);ec.bezierCurveTo(340,330,570,270,440,190);ec.bezierCurveTo(330,130,480,70,450,-30);ec.stroke();ec.strokeStyle='#d5c99e';ec.lineWidth=3;ec.setLineDash([18,20]);ec.stroke();ec.setLineDash([]);
+expCash.forEach(o=>{ec.fillStyle='#ffd166';ec.beginPath();ec.arc(o.x,o.y,8,0,7);ec.fill()});
+ec.fillStyle='#5de4ff';ec.beginPath();ec.moveTo(expX,300);ec.lineTo(expX-21,346);ec.lineTo(expX+21,346);ec.fill();ec.fillStyle='#f4fbff';ec.font='bold 17px system-ui';ec.fillText(modeNames[expMode].toUpperCase(),22,30);ec.font='13px system-ui';ec.fillText('EXPEDITION · COLLECT CASH · EXPLORE',22,52);
+}
+function expLoop(t){if(!expRun)return;let dt=Math.min((t-expLast)/16,2);expLast=t;expTick+=dt;expX=Math.max(215,Math.min(685,expX+(((expKeys.ArrowLeft||expKeys.a)?-1:0)+((expKeys.ArrowRight||expKeys.d)?1:0)+expTouch)*5*dt));if(Math.random()<.018)expCash.push({x:230+Math.random()*440,y:-5});expCash.forEach(o=>o.y+=3*dt);expCash=expCash.filter(o=>{if(o.y>285&&o.y<350&&Math.abs(o.x-expX)<30){s.cash+=45;s.xp+=8;save();return false}return o.y<410});paintExp();expLast=t;requestAnimationFrame(expLoop)}
+function toggleExp(){expRun=!expRun;$('expStart').textContent=expRun?'Pause drive':'Resume drive';$('expStatus').textContent=expRun?'Driving '+modeNames[expMode]+' · Collect the glowing cash':'Drive paused';if(expRun){expLast=performance.now();requestAnimationFrame(expLoop)}}
+$('expStart').onclick=toggleExp;
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mode]').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');expMode=b.dataset.mode;paintExp();$('expStatus').textContent=modeNames[expMode]+' selected'});
+$('rotateBtn').onclick=async()=>{const hint=$('rotateHint');hint.classList.toggle('show');try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock('landscape');}catch(e){hint.classList.add('show')}};
+window.addEventListener('keydown',e=>expKeys[e.key]=true);window.addEventListener('keyup',e=>expKeys[e.key]=false);
+exp.addEventListener('pointerdown',e=>{let r=exp.getBoundingClientRect();expTouch=e.clientX<r.left+r.width/2?-1:1});['pointerup','pointerleave','pointercancel'].forEach(n=>exp.addEventListener(n,()=>expTouch=0));paintExp();
+
 })();
 </script></body></html>
