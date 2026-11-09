@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#080d19"><meta name="description" content="R.H-CHASE: The Ultimate Run. Dodge, collect, survive and beat your best score.">
+<title>R.H-CHASE — The Ultimate Run</title>
+<style>
+:root{color-scheme:dark;--bg:#080d19;--panel:#111b2d;--cyan:#48e5ff;--gold:#ffd166;--muted:#9db0c8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#1b3455 0,#080d19 60%);color:#f4f8ff;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;min-height:100vh;display:flex;justify-content:center}
+.wrap{width:min(100%,980px);padding:18px 16px 30px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.brand{font-weight:1000;letter-spacing:.08em;font-size:clamp(20px,4vw,30px)}.brand span{color:var(--cyan)}.tag{font-size:11px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase}
+.pill{border:1px solid #29405c;background:#101a2b;border-radius:999px;padding:8px 12px;color:#b7c9df;font-size:12px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:14px}.gamebox,.side{background:linear-gradient(160deg,#14233a,#0d1525);border:1px solid #263d59;border-radius:20px;box-shadow:0 18px 60px #0008;overflow:hidden}
+.hud{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;background:#0b1423;border-bottom:1px solid #263d59}.stat small{display:block;color:#8fa6c2;font-size:10px;letter-spacing:.13em}.stat b{font-size:21px;font-variant-numeric:tabular-nums}.stat b.gold{color:var(--gold)}
+.stage{position:relative;background:#07111f;aspect-ratio:16/10;min-height:280px;overflow:hidden}canvas{width:100%;height:100%;display:block;touch-action:none}
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:22px;background:linear-gradient(#07111f99,#07111fdd)}.overlay.hidden{display:none}.modal{max-width:430px}.eyebrow{color:var(--cyan);font-size:11px;font-weight:800;letter-spacing:.24em}.modal h1{font-size:clamp(28px,5vw,46px);line-height:1;margin:12px 0}.modal p{color:#b2c3d8;line-height:1.5}.btn{border:0;border-radius:12px;padding:13px 22px;background:linear-gradient(110deg,#40dff7,#7af4c6);color:#07111b;font-weight:950;font-size:14px;cursor:pointer;box-shadow:0 8px 25px #39dff744}.btn:active{transform:translateY(1px)}.subbtn{background:#1b2a41;color:#dcecff;border:1px solid #3a5575;box-shadow:none;margin-left:7px}
+.controls{display:flex;justify-content:center;gap:10px;padding:12px;background:#0b1423;border-top:1px solid #263d59}.ctrl{width:64px;height:48px;border-radius:13px;border:1px solid #38516e;background:#15253b;color:#fff;font-size:22px;font-weight:900;touch-action:manipulation}
+.side{padding:16px}.side h3{margin:0 0 12px;font-size:14px;letter-spacing:.08em}.side p{color:var(--muted);font-size:12px;line-height:1.55}.scoreline{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #26364d;font-size:13px}.scoreline strong{color:var(--gold)}.rule{margin:15px 0;padding:12px;border-radius:12px;background:#0a1423;color:#aebfd3;font-size:12px;line-height:1.55}.store{margin-top:14px;padding:14px;border:1px solid #344b66;border-radius:14px;background:#0c1728}.store b{display:block;margin-bottom:5px}.store .lock{color:var(--gold);font-size:11px;letter-spacing:.08em}.foot{text-align:center;color:#647b98;font-size:11px;margin-top:15px}
+@media(max-width:720px){.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr;gap:10px}.side h3{grid-column:1/-1}.rule,.store{margin:0}.stage{min-height:260px}.top{align-items:flex-start}.pill{font-size:10px}}
+</style>
+</head>
+<body><main class="wrap">
+<header class="top"><div><div class="brand">R.H-<span>CHASE</span></div><div class="tag">The Ultimate Run</div></div><div class="pill">ARCADE • ENDLESS RUNNER</div></header>
+<div class="layout"><section class="gamebox">
+<div class="hud"><div class="stat"><small>SCORE</small><b id="score">00000</b></div><div class="stat"><small>BEST RUN</small><b class="gold" id="best">00000</b></div><div class="stat"><small>COINS</small><b id="coins">0</b></div></div>
+<div class="stage"><canvas id="game" width="960" height="600" aria-label="R.H-CHASE game canvas"></canvas>
+<div class="overlay" id="overlay"><div class="modal"><div class="eyebrow">READY, RUNNER?</div><h1 id="headline">THE CHASE<br>STARTS NOW.</h1><p id="message">Dodge barriers, leap over hazards and collect energy coins. How long can you stay ahead?</p><button class="btn" id="start">START RUN</button></div></div></div>
+<div class="controls"><button class="ctrl" id="left" aria-label="Move left">◀</button><button class="ctrl" id="jump" aria-label="Jump">▲</button><button class="ctrl" id="right" aria-label="Move right">▶</button></div>
+</section>
+<aside class="side"><h3>RUN INTEL</h3><div><div class="scoreline"><span>Move</span><strong>← → / A D</strong></div><div class="scoreline"><span>Jump</span><strong>↑ / SPACE</strong></div><div class="scoreline"><span>Pause</span><strong>P</strong></div><div class="rule">Three lanes. One runner. Obstacles get faster the longer you survive. Hit a barrier and the chase is over.</div></div>
+<div class="store"><b>RUNNER VAULT</b><span class="lock">PREMIUM CONTENT — COMING SOON</span><p>New runner skins, trail effects and challenge packs are planned. Purchases will only be enabled after secure checkout is configured.</p></div>
+</aside></div><div class="foot">© 2026 R.H-CHASE • Built for desktop and mobile browsers</div>
+</main>
+<script>
+(()=>{"use strict";
+const c=document.getElementById("game"),ctx=c.getContext("2d"),$=id=>document.getElementById(id);
+let running=false,paused=false,raf=0,last=0,score=0,coins=0,speed=330,spawn=0,items=[],lane=1,jump=0,flash=0;
+let best=Number(localStorage.getItem("rhchase_best")||0);$("best").textContent=String(best).padStart(5,"0");
+const lanes=[300,480,660],ground=495;
+function reset(){score=0;coins=0;speed=330;spawn=0;items=[];lane=1;jump=0;flash=0;updateHud()}
+function updateHud(){$("score").textContent=String(Math.floor(score)).padStart(5,"0");$("coins").textContent=coins;$("best").textContent=String(best).padStart(5,"0")}
+function start(){cancelAnimationFrame(raf);reset();running=true;paused=false;$("overlay").classList.add("hidden");last=performance.now();raf=requestAnimationFrame(loop)}
+function end(){running=false;cancelAnimationFrame(raf);if(Math.floor(score)>best){best=Math.floor(score);localStorage.setItem("rhchase_best",best)}updateHud();$("headline").innerHTML="RUN OVER";$("message").textContent="You scored "+Math.floor(score)+" and collected "+coins+" coins. Ready for another attempt?";$("start").textContent="RUN AGAIN";$("overlay").classList.remove("hidden")}
+function move(d){if(!running||paused)return;lane=Math.max(0,Math.min(2,lane+d))}
+function leap(){if(running&&!paused&&jump<=0)jump=1}
+function key(e){if(["ArrowLeft","ArrowRight","ArrowUp"," "].includes(e.key))e.preventDefault();if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a")move(-1);if(e.key==="ArrowRight"||e.key.toLowerCase()==="d")move(1);if(e.key==="ArrowUp"||e.key===" ")leap();if(e.key.toLowerCase()==="p"&&running){paused=!paused;if(!paused){last=performance.now();raf=requestAnimationFrame(loop)}}}
+window.addEventListener("keydown",key);$("start").onclick=start;$("left").onpointerdown=()=>move(-1);$("right").onpointerdown=()=>move(1);$("jump").onpointerdown=leap;
+function spawnItem(){let type=Math.random()<.28?"coin":"block";items.push({lane:Math.floor(Math.random()*3),z:0,type,hit:false})}
+function loop(now){if(!running||paused)return;let dt=Math.min((now-last)/1000,.04);last=now;score+=dt*speed*.055;speed=Math.min(760,330+score*.28);spawn-=dt;if(spawn<=0){spawnItem();spawn=Math.max(.42,1.12-score/1600)*(0.75+Math.random()*.45)}
+if(jump>0)jump=Math.max(0,jump-dt*1.8);for(let o of items){o.z+=dt*speed;if(!o.hit&&o.z>ground-75&&o.z<ground+12&&o.lane===lane){if(o.type==="coin"){o.hit=true;coins++}else if(jump<.42){end();return}else{o.hit=true;flash=.18}}}items=items.filter(o=>o.z<650&&!o.hit);updateHud();draw();raf=requestAnimationFrame(loop)}
+function draw(){ctx.clearRect(0,0,960,600);let g=ctx.createLinearGradient(0,0,0,600);g.addColorStop(0,"#091b30");g.addColorStop(1,"#101d2b");ctx.fillStyle=g;ctx.fillRect(0,0,960,600);
+ctx.fillStyle="#10283b";ctx.beginPath();ctx.moveTo(170,0);ctx.lineTo(790,0);ctx.lineTo(940,600);ctx.lineTo(20,600);ctx.fill();
+ctx.strokeStyle="#28435a";ctx.lineWidth=5;for(let x of [390,570]){ctx.beginPath();ctx.moveTo(480+(x-480)*.15,0);ctx.lineTo(x,600);ctx.stroke()}
+for(let i=0;i<14;i++){let y=(i*65+(score*5)%65);ctx.fillStyle="#1e3b4c";ctx.fillRect(175,y,10,26);ctx.fillRect(775,y,10,26)}
+ctx.fillStyle="#27485a";ctx.fillRect(20,ground+26,920,5);
+for(let o of items){let y=o.z,scale=.25+y/700,x=lanes[o.lane],w=(o.type==="coin"?24:70)*scale,h=(o.type==="coin"?24:68)*scale;ctx.save();ctx.translate(x,y);if(o.type==="coin"){ctx.fillStyle="#ffd166";ctx.beginPath();ctx.arc(0,0,w,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#fff0a6";ctx.lineWidth=4*scale;ctx.stroke()}else{ctx.fillStyle="#f06449";ctx.fillRect(-w/2,-h/2,w,h);ctx.fillStyle="#ffb08c";ctx.fillRect(-w/2,-h/2,w,8*scale)}ctx.restore()}
+let px=lanes[lane],py=ground-jump*115;ctx.save();ctx.translate(px,py);ctx.shadowColor="#43eaff";ctx.shadowBlur=25;ctx.fillStyle="#43dff4";ctx.beginPath();ctx.roundRect(-25,-58,50,70,15);ctx.fill();ctx.shadowBlur=0;ctx.fillStyle="#10233b";ctx.fillRect(-15,-40,30,10);ctx.fillStyle="#f7fbff";ctx.fillRect(-15,10,12,24);ctx.fillRect(5,10,12,24);ctx.restore();
+ctx.fillStyle="#b5d6e9";ctx.font="bold 15px system-ui";ctx.fillText("DISTANCE "+Math.floor(score)+"m",32,42);if(flash>0){flash-=.02;ctx.fillStyle="#fff";ctx.fillRect(0,0,960,600)}}
+draw();
+})();
+</script></body></html>
