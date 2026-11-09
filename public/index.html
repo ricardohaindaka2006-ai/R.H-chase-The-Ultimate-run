@@ -72,13 +72,71 @@ function renderUpgrades(){$('upgrades').innerHTML=[['dash','Energy dash',500,'A 
 function upgrade(id,c){if(s.upgrades[id])return;if(s.cash<c)return alert('Not enough cash.');s.cash-=c;s.upgrades[id]=true;save()}
 function render(){applyGraphics();applyRegion();$('cash').textContent=s.cash.toLocaleString();$('coins').textContent=s.coins.toLocaleString();$('level').textContent=Math.floor(s.xp/500)+1;$('xp').textContent=s.xp;$('xpbar').style.width=(s.xp%500)/5+'%';$('xptext').textContent=(s.xp%500)+' / 500 XP to next level';$('daily').disabled=s.lastDaily===new Date().toDateString();$('daily').textContent=$('daily').disabled?'Claimed today':'Claim $250';renderWorlds();renderMissions();renderGarage();renderStyle();renderUpgrades();$('soundToggle').textContent=s.sound?'On':'Off';$('motionToggle').textContent=s.motion?'On':'Off'}
 const cv=$('game'),cx=cv.getContext('2d');let keys={};
-function scenery(){let g=cx.createLinearGradient(0,0,0,540);g.addColorStop(0,activeWorld.sky[0]);g.addColorStop(1,activeWorld.sky[1]);cx.fillStyle=g;cx.fillRect(0,0,960,540);let t=performance.now()/1000;
-if(activeWorld.id==='space'){for(let i=0;i<90;i++){cx.fillStyle='#ffffffaa';cx.fillRect((i*131)%960,(i*73)%310,2,2)}cx.fillStyle='#9b82d9';cx.beginPath();cx.arc(760,120,72,0,7);cx.fill();cx.fillStyle='#4e4b83';cx.fillRect(0,355,960,185)}
-else if(activeWorld.id==='city'){for(let i=0;i<15;i++){let x=i*70;let h=100+(i*47)%170;cx.fillStyle=i%2?'#172d48':'#203a56';cx.fillRect(x,260-h,54,h);cx.fillStyle='#ffd77a';for(let y=280-h;y<250;y+=24)for(let xx=x+10;xx<x+50;xx+=18)cx.fillRect(xx,y,6,8)}cx.fillStyle='#263d48';cx.fillRect(0,340,960,200)}
-else{for(let i=0;i<8;i++){let x=i*140-30;cx.fillStyle=activeWorld.id==='jungle'?'#1e6548':'#456b7c';cx.beginPath();cx.moveTo(x,350);cx.lineTo(x+90,70+(i%3)*30);cx.lineTo(x+190,350);cx.fill();if(activeWorld.id==='arctic'||activeWorld.id==='mountain'){cx.fillStyle='#edf7f7';cx.beginPath();cx.moveTo(x+60,160+(i%3)*30);cx.lineTo(x+90,70+(i%3)*30);cx.lineTo(x+120,160+(i%3)*30);cx.fill()}}cx.fillStyle=activeWorld.ground;cx.fillRect(0,330,960,210)}
-cx.fillStyle=activeWorld.road;cx.beginPath();cx.moveTo(275,540);cx.lineTo(390,300);cx.lineTo(570,300);cx.lineTo(685,540);cx.fill();cx.strokeStyle='#e9dca9';cx.lineWidth=4;cx.setLineDash([22,24]);cx.beginPath();cx.moveTo(480,540);cx.lineTo(480,300);cx.stroke();cx.setLineDash([]);
-for(let i=0;i<14;i++){let y=315+(i*19+score*3)%220;cx.fillStyle=activeWorld.id==='space'?'#7d72b4':'#234d3c';cx.fillRect(80+(i*113)%800,y,8,25)}
-cx.fillStyle='#ffffff';cx.font='bold 16px system-ui';cx.fillText(activeWorld.name.toUpperCase(),24,34);cx.font='13px system-ui';cx.fillText(currentMission?currentMission.title:'FREE ROAM · EXPLORE THE WORLD',24,57);
+function scenery(){
+ const W=960,H=540,t=performance.now()/1000,world=activeWorld.id;
+ const grad=(y0,y1,a,b)=>{const g=cx.createLinearGradient(0,y0,0,y1);g.addColorStop(0,a);g.addColorStop(1,b);return g};
+ const poly=(pts,color)=>{cx.beginPath();cx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)cx.lineTo(pts[i][0],pts[i][1]);cx.closePath();cx.fillStyle=color;cx.fill()};
+ const ellipse=(x,y,rx,ry,color)=>{cx.beginPath();cx.ellipse(x,y,rx,ry,0,0,Math.PI*2);cx.fillStyle=color;cx.fill()};
+ cx.fillStyle=grad(0,H,activeWorld.sky[0],activeWorld.sky[1]);cx.fillRect(0,0,W,H);
+ // Atmospheric glow and distant horizon.
+ const glow=cx.createRadialGradient(735,145,8,735,145,260);glow.addColorStop(0,'#fff4cf88');glow.addColorStop(1,'#fff4cf00');cx.fillStyle=glow;cx.fillRect(420,0,540,400);
+ if(world==='space'){
+   for(let i=0;i<170;i++){let x=(i*137.5)%W,y=(i*79.3)%335;cx.globalAlpha=.35+((i%5)/8);ellipse(x,y,1+(i%3)*.45,1+(i%3)*.45,'#fff');}cx.globalAlpha=1;
+   // Earth limb, cloud bands and lunar terrain.
+   const earth=cx.createRadialGradient(760,142,20,760,142,112);earth.addColorStop(0,'#8fd8ec');earth.addColorStop(.62,'#2477a8');earth.addColorStop(1,'#10233f');ellipse(760,142,112,112,earth);
+   ellipse(730,110,36,18,'#a4c9b1aa');ellipse(790,162,43,24,'#d3e4d5aa');ellipse(710,176,24,11,'#b9d5caaa');
+   cx.fillStyle='#171d27';cx.fillRect(0,365,W,175);
+   for(let i=0;i<16;i++){let x=(i*83+25)%W,y=375+(i*37)%145,r=7+(i%5)*7;ellipse(x,y,r*1.5,r*.48,'#343b46');ellipse(x-4,y-3,r,.28*r,'#626a72');}
+   cx.strokeStyle='#b7c3d255';cx.lineWidth=2;cx.beginPath();cx.moveTo(0,365);cx.quadraticCurveTo(450,342,960,370);cx.stroke();
+   // Research habitat silhouettes on the lunar ridge.
+   cx.fillStyle='#b5c1c6';cx.fillRect(112,318,82,45);cx.fillRect(132,294,43,24);ellipse(153,294,22,7,'#dbe4e6');
+   cx.strokeStyle='#d6e4e8';cx.lineWidth=3;cx.beginPath();cx.moveTo(194,343);cx.lineTo(238,343);cx.lineTo(238,319);cx.stroke();
+ }else if(world==='city'){
+   // Warm Namibian late-afternoon sky and distant Khomas highlands.
+   ellipse(760,145,52,52,'#f7d69b');ellipse(760,145,78,78,'#f7d69b22');
+   poly([[0,320],[90,245],[180,290],[280,218],[380,292],[500,230],[620,286],[760,220],[880,270],[960,230],[960,410],[0,410]],'#657a79');
+   poly([[0,338],[120,285],[220,320],[360,260],[500,330],[640,270],[780,320],[900,270],[960,300],[960,430],[0,430]],'#455d59');
+   // Layered city blocks, varied rooflines, windows and street lamps.
+   for(let i=0;i<22;i++){let x=i*47-8,w=30+(i*13)%22,h=54+(i*41)%120,y=360-h;cx.fillStyle=i%3===0?'#b7a48a':i%3===1?'#7e8c8b':'#566e70';cx.fillRect(x,y,w,h);cx.fillStyle='#d5c8ae';cx.fillRect(x-2,y-4,w+4,5);for(let wy=y+13;wy<350;wy+=18)for(let wx=x+7;wx<x+w-4;wx+=13){cx.fillStyle=(i+wy+wx)%4?'#e8c98a':'#273d46';cx.fillRect(wx,wy,6,8)}}
+   // Tree crowns and roadside palms.
+   for(let i=0;i<13;i++){let x=(i*89+30)%W,y=348+(i%3)*8;cx.fillStyle='#314f3c';cx.fillRect(x-3,y,6,30);ellipse(x,y-5,17,13,'#426b4b');ellipse(x-9,y-12,10,9,'#527b51');}
+   cx.fillStyle='#29383a';cx.fillRect(0,385,W,155);
+ }else if(world==='arctic'){
+   ellipse(760,118,45,45,'#eaf8ff');ellipse(760,118,78,78,'#eaf8ff22');
+   poly([[0,340],[120,190],[210,280],[360,100],[500,285],[660,135],[800,280],[910,160],[960,225],[960,420],[0,420]],'#69899a');
+   poly([[300,168],[360,100],[420,175],[382,158],[360,132],[342,162]],'#f4fbff');
+   poly([[595,205],[660,135],[725,205],[681,184],[660,165],[642,190]],'#f7fdff');
+   poly([[0,355],[160,290],[280,350],[450,270],[620,350],[800,285],[960,340],[960,540],[0,540]],'#c8e1e8');
+   cx.fillStyle='#eaf6f8';cx.fillRect(0,385,W,155);
+   // Wind-sculpted snow drifts and research station.
+   for(let i=0;i<9;i++){ellipse(i*128+20,425+(i%3)*25,95,18,'#eff9fa');}
+   cx.fillStyle='#405e70';cx.fillRect(720,305,104,65);cx.fillStyle='#a8d4df';cx.fillRect(736,319,25,22);cx.fillRect(774,319,35,22);cx.fillStyle='#d9e9ed';cx.fillRect(750,286,43,19);
+ }else if(world==='jungle'){
+   ellipse(790,125,44,44,'#f3d58d');poly([[0,330],[130,250],[250,315],[390,220],[520,300],[680,225],[810,300],[960,220],[960,430],[0,430]],'#3b765b');
+   // Dense layered forest canopy.
+   for(let i=0;i<38;i++){let x=(i*47)%W,y=225+(i*31)%145,r=28+(i%4)*9;ellipse(x,y,r,r*.7,i%3===0?'#174d3c':i%3===1?'#236447':'#31754b');}
+   cx.fillStyle='#174e47';cx.fillRect(0,370,W,170);cx.fillStyle='#5a9b9a';cx.beginPath();cx.moveTo(0,410);cx.bezierCurveTo(240,370,350,485,540,420);cx.bezierCurveTo(700,370,810,480,960,410);cx.lineTo(960,540);cx.lineTo(0,540);cx.fill();
+   for(let i=0;i<9;i++){let x=i*125+30;cx.strokeStyle='#a6c98a';cx.lineWidth=3;cx.beginPath();cx.moveTo(x,370);cx.quadraticCurveTo(x-40,290,x-55,270);cx.stroke();cx.beginPath();cx.moveTo(x,370);cx.quadraticCurveTo(x+45,290,x+58,265);cx.stroke();}
+ }else{
+   // Erongo granite peaks, layered ridges and high-desert scrub.
+   ellipse(760,120,48,48,'#f7d9a1');
+   poly([[0,355],[100,255],[185,300],[300,105],[410,300],[520,175],[650,310],[780,125],[900,295],[960,250],[960,430],[0,430]],'#647b7b');
+   poly([[245,170],[300,105],[355,174],[322,155],[300,132],[280,159]],'#d9e0dc');
+   poly([[730,180],[780,125],[830,183],[800,163],[780,146],[760,168]],'#e4e7df');
+   poly([[0,355],[170,300],[330,360],[510,295],[690,360],[850,305],[960,345],[960,540],[0,540]],'#8c9274');
+   for(let i=0;i<22;i++){let x=(i*53)%W,y=390+(i*29)%120;cx.strokeStyle='#52674b';cx.lineWidth=3;cx.beginPath();cx.moveTo(x,y+14);cx.lineTo(x-4,y);cx.moveTo(x,y+14);cx.lineTo(x+7,y+2);cx.stroke();}
+ }
+ // Road perspective, shoulder gravel, lane paint and subtle tire wear.
+ const horizon=world==='space'?365:385;
+ cx.fillStyle=world==='space'?'#555d65':world==='arctic'?'#8099a1':'#635e50';cx.beginPath();cx.moveTo(0,horizon+20);cx.lineTo(275,540);cx.lineTo(685,540);cx.lineTo(960,horizon+20);cx.closePath();cx.fill();
+ const road=world==='space'?'#303943':world==='arctic'?'#526873':'#343c3d';
+ poly([[275,540],[405,horizon],[555,horizon],[685,540]],road);
+ cx.strokeStyle=world==='arctic'?'#e9f6f6':'#d5c9a2';cx.lineWidth=4;cx.setLineDash([24,26]);cx.beginPath();cx.moveTo(480,540);cx.lineTo(480,horizon);cx.stroke();cx.setLineDash([]);
+ cx.strokeStyle='#d9d1bd77';cx.lineWidth=2;cx.beginPath();cx.moveTo(290,540);cx.lineTo(407,horizon);cx.moveTo(670,540);cx.lineTo(553,horizon);cx.stroke();
+ for(let i=0;i<22;i++){let y=horizon+15+(i*19+score*3)%155,scale=(y-horizon)/155;cx.fillStyle=world==='space'?'#89919a':world==='arctic'?'#eaf5f5':'#a99a76';ellipse(115+(i*137)%730,y,2+scale*5,1+scale*2,cx.fillStyle);}
+ // Cinematic vignette and restrained HUD.
+ const vignette=cx.createRadialGradient(480,265,180,480,265,620);vignette.addColorStop(0,'#06101800');vignette.addColorStop(1,'#06101870');cx.fillStyle=vignette;cx.fillRect(0,0,W,H);
+ cx.fillStyle='#ffffff';cx.font='900 16px system-ui';cx.fillText(activeWorld.name.toUpperCase(),24,34);cx.font='13px system-ui';cx.fillStyle='#f2f3e8';cx.fillText(currentMission?currentMission.title:'FREE ROAM · EXPLORE THE WORLD',24,57);
 }
 function draw(){scenery();let lanes=[390,480,570];objects.forEach(o=>{let y=o.z,scale=.25+y/700,x=lanes[o.lane],w=(o.type==='coin'?23:65)*scale,h=(o.type==='coin'?23:66)*scale;cx.save();cx.translate(x,y);if(o.type==='coin'){cx.fillStyle='#ffd166';cx.beginPath();cx.arc(0,0,w,0,7);cx.fill();cx.strokeStyle='#fff1ac';cx.lineWidth=4*scale;cx.stroke()}else{cx.fillStyle='#f06449';cx.fillRect(-w/2,-h/2,w,h);cx.fillStyle='#ffb08c';cx.fillRect(-w/2,-h/2,w,8*scale)}cx.restore()});let px=lanes[lane],py=440-jump*115;cx.save();cx.translate(px,py);cx.shadowColor='#43eaff';cx.shadowBlur=22;cx.fillStyle='#152a44';cx.beginPath();cx.roundRect(-24,-65,48,76,14);cx.fill();cx.shadowBlur=0;cx.fillStyle='#e8f8ff';cx.beginPath();cx.arc(0,-76,17,0,7);cx.fill();cx.fillStyle='#d34a35';cx.fillRect(-24,-38,48,12);cx.fillStyle='#f5f8fc';cx.fillRect(-16,10,12,24);cx.fillRect(5,10,12,24);cx.restore();if(!running){cx.fillStyle='#06101b99';cx.fillRect(0,0,960,540);cx.fillStyle='white';cx.textAlign='center';cx.font='bold 30px system-ui';cx.fillText('R.H-CHASE · '+activeWorld.name.toUpperCase(),480,240);cx.font='16px system-ui';cx.fillText('Select a mission or start a free expedition',480,274);cx.textAlign='left'}}
 function launch(){if(running){running=false;cancelAnimationFrame(raf);$('launch').textContent='Resume expedition';$('status').textContent='Expedition paused.';draw();return}score=0;spawn=0;objects=[];lane=1;jump=0;running=true;$('launch').textContent='Pause expedition';$('status').textContent=currentMission?currentMission.title+' · survive and collect energy':'Free expedition · explore and collect energy';last=performance.now();raf=requestAnimationFrame(loop)}
