@@ -1,12 +1,12 @@
 {
   "name": "R.H-CHASE: The Ultimate Adventure",
   "short_name": "R.H-CHASE",
-  "description": "A story-driven multi-world action adventure.",
+  "description": "A grounded cinematic 2040 open-world adventure, starting in Namibia.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#07111e",
-  "theme_color": "#07111e",
+  "background_color": "#101915",
+  "theme_color": "#17231f",
   "orientation": "any",
   "icons": [
     {
